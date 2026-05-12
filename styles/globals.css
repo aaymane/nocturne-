@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --grain-opacity: 0.30;
+    --vignette-strength: 0.90;
+  }
+
+  html,
+  body {
+    @apply bg-night text-ink antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Force the custom cursor across the document on devices that support hover */
+  @media (hover: hover) and (pointer: fine) {
+    html,
+    body,
+    a,
+    button,
+    [role='button'] {
+      cursor: none;
+    }
+  }
+
+  ::selection {
+    @apply bg-chrome text-night;
+  }
+
+  body {
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(216, 201, 168, 0.018), transparent 42%),
+      radial-gradient(ellipse at 80% 100%, rgba(216, 201, 168, 0.012), transparent 48%),
+      theme('colors.night.DEFAULT');
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* ---------- Editorial type ---------- */
+  .editorial-label {
+    @apply text-[11px] uppercase tracking-editorial text-ink-dim;
+  }
+  .editorial-micro {
+    @apply text-[10px] uppercase tracking-wider text-ink-faint;
+  }
+  .rule {
+    @apply h-px w-full bg-ink-ghost;
+  }
+
+  /* ---------- Reveal primitive ----------
+     Used by <Reveal> component — initial state. The component flips .in. */
+  .reveal-init {
+    opacity: 0;
+    transform: translateY(36px);
+    filter: blur(20px);
+    transition:
+      opacity 2.2s cubic-bezier(0.16, 0.84, 0.22, 1),
+      transform 2.4s cubic-bezier(0.16, 0.84, 0.22, 1),
+      filter 2.2s cubic-bezier(0.16, 0.84, 0.22, 1);
+  }
+  .reveal-init.in {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  /* ---------- Scene base ---------- */
+  .scene {
+    @apply relative w-full overflow-hidden;
+    min-height: 100svh;
+  }
+  .scene-video {
+    @apply absolute inset-0 h-full w-full object-cover;
+    filter: saturate(0.72) contrast(1.30) brightness(0.60);
+    will-change: transform, opacity;
+  }
+}
+
+@layer utilities {
+  /* Disable cursor on touch devices */
+  @media (hover: none) {
+    .luxury-cursor {
+      display: none !important;
+    }
+  }
+
+  /* Reduce-motion respect */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
