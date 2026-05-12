@@ -75,7 +75,13 @@
   .scene-video {
     @apply absolute inset-0 h-full w-full object-cover;
     filter: saturate(0.72) contrast(1.30) brightness(0.60);
-    will-change: transform, opacity;
+    will-change: transform;
+    /* Prevent the black-flash before first frame on slow connections */
+    background: #050505;
+  }
+  /* Hero gets slightly more light so the subject reads clearly */
+  .scene-video.hero-grade {
+    filter: saturate(0.80) contrast(1.18) brightness(0.74);
   }
 }
 
@@ -84,6 +90,18 @@
   @media (hover: none) {
     .luxury-cursor {
       display: none !important;
+    }
+  }
+
+  /* Mobile: reduce blur radius and translateY for cheaper GPU composite */
+  @media (max-width: 767px) {
+    .reveal-init {
+      transform: translateY(22px);
+      filter: blur(8px);
+      transition:
+        opacity 1.8s cubic-bezier(0.16, 0.84, 0.22, 1),
+        transform 2.0s cubic-bezier(0.16, 0.84, 0.22, 1),
+        filter 1.6s cubic-bezier(0.16, 0.84, 0.22, 1);
     }
   }
 

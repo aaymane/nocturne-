@@ -10,23 +10,9 @@ interface CinematicVideoProps {
   driftFrom?: number;
   /** Drift duration in seconds. Long, slow — never under 20. */
   driftDuration?: number;
-  /** Filter override (sat/contrast/brightness). Defaults to the project's grade. */
   className?: string;
 }
 
-/**
- * Fullscreen cinematic video background.
- *
- * Behaviour:
- *  - autoplays muted + looped + playsInline (mobile-friendly)
- *  - performs a very slow scale drift via GSAP — Ken Burns simulation that
- *    sells "camera breathing" rather than the static feel of looped footage
- *  - pauses when offscreen via IntersectionObserver to conserve resources
- *  - inherits the project's color grade through the .scene-video class
- *
- * The drift is intentionally subtle (1.05 → 1.0 over 24s). Anything faster
- * reads as zoom; anything visible reads as cinematic camera presence.
- */
 export function CinematicVideo({
   src,
   poster,
@@ -40,8 +26,19 @@ export function CinematicVideo({
     const video = videoRef.current;
     if (!video) return;
 
-    // Slow scale drift — restarts on each loop iteration so the breathing
-    // never visibly resets.
+    const tryPlay = () => {
+      const p = video.play();
+      if (p !== undefined) p.catch(() => {});
+    };
+
+    // Play as soon as there's enough data — don't wait for IntersectionObserver.
+    if (video.readyState >= 2) {
+      tryPlay();
+    } else {
+      video.addEventListener('canplay', tryPlay, { once: true });
+    }
+
+    // Slow Ken Burns drift — yoyo so there's never a visible reset.
     const tween = gsap.fromTo(
       video,
       { scale: driftFrom },
@@ -54,25 +51,23 @@ export function CinematicVideo({
       },
     );
 
-    // Visibility-driven playback. Pausing offscreen avoids decode work
-    // and respects the user's bandwidth.
+    // Pause when significantly offscreen to conserve decode budget.
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.play().catch(() => {
-            /* autoplay blocked — silent fail, poster remains visible */
-          });
+          tryPlay();
         } else {
           video.pause();
         }
       },
-      { threshold: 0.05 },
+      { threshold: 0.01 },
     );
     io.observe(video);
 
     return () => {
       tween.kill();
       io.disconnect();
+      video.removeEventListener('canplay', tryPlay);
     };
   }, [driftFrom, driftDuration]);
 
@@ -84,7 +79,7 @@ export function CinematicVideo({
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="auto"
       poster={poster}
     >
       <source src={src} type="video/mp4" />

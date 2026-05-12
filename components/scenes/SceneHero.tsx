@@ -104,6 +104,7 @@ export function SceneHero() {
           poster="/images/hero-poster.png"
           driftFrom={1.08}
           driftDuration={36}
+          className="hero-grade"
         />
       </motion.div>
 
@@ -139,15 +140,15 @@ export function SceneHero() {
           rotation via `perspective` so it feels like a monumental
           object occupying real space. Metadata rides the deepest
           parallax (±75 px) — it floats closest to the viewer. */}
-      <div className="relative z-[3] flex min-h-[100svh] w-full flex-col justify-between px-[5vw] pb-8 pt-20 sm:px-[6vw] sm:pt-24 md:px-[8vw] md:pb-14 md:pt-32 lg:pt-36">
+      <div className="relative z-[3] flex min-h-[100svh] w-full flex-col justify-between px-[5vw] pb-6 pt-[72px] sm:px-[6vw] sm:pb-8 sm:pt-24 md:px-[8vw] md:pb-14 md:pt-32 lg:pt-36">
 
-        {/* Metadata — closest plane, max parallax */}
+        {/* Metadata — top row */}
         <motion.div
           className="flex items-start justify-between"
           style={{ x: metaX, y: metaY }}
         >
           <Reveal delay={200}>
-            <div className="editorial-label max-w-[240px] leading-[1.8]">
+            <div className="editorial-label max-w-[200px] leading-[1.8] sm:max-w-[240px]">
               {volume}
               <br />
               {subtitle}
@@ -162,13 +163,10 @@ export function SceneHero() {
           </Reveal>
         </motion.div>
 
-        {/* Headline — mid plane + 3D camera rotation.
-            The perspective wrapper makes rotateX/Y apply in 3D space,
-            so the headline tilts like a physical surface — not a screen
-            element doing a 2D skew. */}
+        {/* Headline */}
         <div style={{ perspective: '900px' }}>
           <motion.h1
-            className="mt-auto font-display font-light leading-[0.86] tracking-[-0.02em] text-balance"
+            className="mt-auto font-display font-light leading-[0.86] tracking-[-0.02em]"
             style={{
               x: typX,
               y: typY,
@@ -178,26 +176,24 @@ export function SceneHero() {
           >
             <Reveal as="span" delay={500}>
               <span
-                className="block text-[clamp(44px,11vw,220px)]"
-                style={{ textShadow: '0 4px 80px rgba(0,0,0,0.45)' }}
+                className="block text-[clamp(40px,11vw,220px)]"
+                style={{ textShadow: '0 4px 60px rgba(0,0,0,0.50)' }}
               >
                 {hero.line1}
               </span>
             </Reveal>
             <Reveal as="span" delay={800}>
               <span
-                className="block text-[clamp(44px,11vw,220px)] pl-[6vw] md:pl-[14vw]"
-                style={{ textShadow: '0 4px 80px rgba(0,0,0,0.45)' }}
+                className="block text-[clamp(40px,11vw,220px)] pl-[6vw] md:pl-[14vw]"
+                style={{ textShadow: '0 4px 60px rgba(0,0,0,0.50)' }}
               >
                 for the{' '}
                 <em
                   className="italic font-light"
                   style={{
                     color: '#ead8b4',
-                    // Spread so wide it affects only the letter edges —
-                    // reads as a slight warmth, never a visible shape.
                     textShadow:
-                      '0 0 200px rgba(234,216,180,0.06), 0 4px 80px rgba(0,0,0,0.45)',
+                      '0 0 200px rgba(234,216,180,0.06), 0 4px 60px rgba(0,0,0,0.50)',
                   }}
                 >
                   night
@@ -208,13 +204,13 @@ export function SceneHero() {
           </motion.h1>
         </div>
 
-        {/* Bottom triad — rides metadata depth */}
+        {/* Bottom triad */}
         <motion.div
-          className="mt-6 grid grid-cols-1 items-end gap-6 md:mt-12 md:grid-cols-[1fr_auto_1fr] md:gap-10"
+          className="mt-5 grid grid-cols-[1fr_1fr] items-end gap-4 sm:mt-6 md:mt-12 md:grid-cols-[1fr_auto_1fr] md:gap-10"
           style={{ x: metaX, y: metaY }}
         >
           <Reveal delay={1100}>
-            <p className="max-w-[360px] text-[13px] leading-[1.6] text-ink-dim">
+            <p className="max-w-[280px] text-[12px] leading-[1.7] text-ink-dim sm:max-w-[360px] sm:text-[13px] sm:leading-[1.6]">
               {hero.sub}
             </p>
           </Reveal>
@@ -237,7 +233,7 @@ export function SceneHero() {
             <div className="text-right">
               <div className="editorial-label">Tonight</div>
               <div
-                className="mt-1 font-display text-lg italic font-light text-ink md:mt-2 md:text-2xl"
+                className="mt-1 font-display text-base italic font-light text-ink sm:text-lg md:mt-2 md:text-2xl"
                 style={{ letterSpacing: '0.02em' }}
               >
                 {time}

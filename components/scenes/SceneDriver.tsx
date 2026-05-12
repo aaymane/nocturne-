@@ -40,18 +40,18 @@ export function SceneDriver() {
           driftDuration={38}
         />
 
-        <div className="relative z-[2] flex w-full items-center px-[5vw] py-20 sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-0">
-          <div className="grid w-full grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-20">
+        <div className="relative z-[2] flex w-full items-center px-[5vw] py-16 sm:px-[6vw] sm:py-20 md:px-[8vw] md:py-0">
+          <div className="grid w-full grid-cols-1 items-center gap-8 sm:gap-10 md:grid-cols-2 md:gap-20">
             {/* LEFT — eyebrow + headline with parallax */}
             <motion.div style={{ y, opacity }}>
               <Reveal>
-                <div className="editorial-label mb-8 flex items-center gap-3 text-chrome">
+                <div className="editorial-label mb-6 flex items-center gap-3 text-chrome sm:mb-8">
                   <span className="block h-px w-9 bg-chrome" />
                   {eyebrow}
                 </div>
               </Reveal>
               <Reveal delay={150}>
-                <h2 className="font-display text-[clamp(36px,7vw,104px)] font-light italic leading-[0.96] tracking-[-0.01em] whitespace-pre-line">
+                <h2 className="font-display text-[clamp(32px,7vw,104px)] font-light italic leading-[0.96] tracking-[-0.01em] whitespace-pre-line">
                   {headline}
                 </h2>
               </Reveal>
@@ -61,19 +61,19 @@ export function SceneDriver() {
             <div>
               {body.map((p, i) => (
                 <Reveal key={i} delay={300 + i * 200}>
-                  <p className="mt-4 max-w-[420px] text-[14px] leading-[1.8] text-ink-dim first:mt-0">
+                  <p className="mt-3 max-w-[420px] text-[13px] leading-[1.8] text-ink-dim first:mt-0 sm:mt-4 sm:text-[14px]">
                     {p}
                   </p>
                 </Reveal>
               ))}
 
               <Reveal delay={800}>
-                <div className="mt-12 flex flex-wrap gap-12">
+                <div className="mt-8 flex flex-wrap gap-8 sm:mt-12 sm:gap-12">
                   {meta.map((m) => (
                     <div key={m.label}>
                       <div className="editorial-micro">{m.label}</div>
                       <div
-                        className="mt-2 font-display text-[22px] italic font-light text-ink"
+                        className="mt-1 font-display text-[18px] italic font-light text-ink sm:mt-2 sm:text-[22px]"
                         style={{ letterSpacing: '0.02em' }}
                       >
                         {m.value}

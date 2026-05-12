@@ -29,26 +29,26 @@ export function SceneDetail() {
             'radial-gradient(ellipse 55% 60% at 25% 40%, rgba(216,201,168,0.028) 0%, transparent 65%)',
         }}
       />
-      <div className="relative z-[2] grid grid-cols-1 gap-[8vw] px-[5vw] py-16 sm:px-[6vw] sm:py-20 md:px-[8vw] md:py-28 lg:py-40 md:grid-cols-[1.1fr_1fr]">
+      <div className="relative z-[2] grid grid-cols-1 gap-10 px-[5vw] py-14 sm:gap-[8vw] sm:px-[6vw] sm:py-20 md:grid-cols-[1.1fr_1fr] md:px-[8vw] md:py-28 lg:py-40">
         {/* LEFT — sticky display headline */}
         <div className="md:sticky md:top-[18vh] md:self-start">
           <Reveal>
-            <div className="editorial-label mb-10 flex items-center gap-3 text-chrome">
+            <div className="editorial-label mb-6 flex items-center gap-3 text-chrome sm:mb-10">
               <span className="block h-px w-9 bg-chrome" />
               {eyebrow}
             </div>
           </Reveal>
           <Reveal delay={200}>
-            <h2 className="font-display text-[clamp(40px,10vw,160px)] font-light leading-[0.88] tracking-[-0.02em]">
+            <h2 className="font-display text-[clamp(36px,10vw,160px)] font-light leading-[0.88] tracking-[-0.02em]">
               {headlinePrefix}{' '}
               <em className="italic text-chrome font-light">{headlineEm}</em>
-              <span className="mt-12 block font-sans text-[11px] uppercase tracking-wider text-ink-dim normal-case font-normal">
+              <span className="mt-6 block font-sans text-[11px] uppercase tracking-wider text-ink-dim normal-case font-normal sm:mt-12">
                 {headlineSuffix}
               </span>
             </h2>
           </Reveal>
           <Reveal delay={400}>
-            <p className="mt-10 max-w-[420px] text-[14px] leading-[1.8] text-ink-dim">{body}</p>
+            <p className="mt-6 max-w-[420px] text-[13px] leading-[1.8] text-ink-dim sm:mt-10 sm:text-[14px]">{body}</p>
           </Reveal>
         </div>
 

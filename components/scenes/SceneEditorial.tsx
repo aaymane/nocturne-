@@ -46,7 +46,7 @@ export function SceneEditorial() {
           driftDuration={30}
         />
 
-        <div className="relative z-[2] flex w-full flex-col justify-between px-[5vw] py-16 sm:px-[6vw] sm:py-20 md:px-[8vw] md:py-32">
+        <div className="relative z-[2] flex w-full flex-col justify-between px-[5vw] py-14 sm:px-[6vw] sm:py-20 md:px-[8vw] md:py-32">
           {/* TOP — chapter mark + meta */}
           <div className="flex items-start justify-between">
             <Reveal>
@@ -87,7 +87,7 @@ export function SceneEditorial() {
           </h2>
 
           {/* BOTTOM — editorial credits */}
-          <div className="mt-10 grid grid-cols-1 gap-8 text-[13px] leading-[1.7] text-ink-dim sm:grid-cols-2 md:mt-14 md:grid-cols-3 md:gap-12">
+          <div className="mt-8 grid grid-cols-1 gap-6 text-[12px] leading-[1.7] text-ink-dim sm:grid-cols-2 sm:gap-8 sm:text-[13px] md:mt-14 md:grid-cols-3 md:gap-12">
             {columns.map((c, i) => (
               <Reveal key={c.title} delay={300 + i * 150}>
                 <div>

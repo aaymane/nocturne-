@@ -12,7 +12,7 @@ export function Footer() {
   const { footer } = editorial;
 
   return (
-    <footer id="footer" className="relative border-t border-ink-ghost bg-[#040404] px-[5vw] pb-8 pt-16 sm:px-[6vw] md:px-[8vw] md:pb-12 md:pt-24 lg:pt-32">
+    <footer id="footer" className="relative border-t border-ink-ghost bg-[#040404] px-[5vw] pb-8 pt-12 sm:px-[6vw] sm:pt-16 md:px-[8vw] md:pb-12 md:pt-24 lg:pt-32">
       <Reveal>
         <h3 className="font-display font-light leading-[0.9] tracking-[-0.02em]">
           <span className="block text-[clamp(36px,9vw,144px)]">{footer.headlineLine1}</span>
