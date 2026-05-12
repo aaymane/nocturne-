@@ -63,7 +63,7 @@ export function Navigation() {
           : 'border-b border-transparent bg-transparent'
       }`}
     >
-      <div className="font-display text-xl italic font-light">
+      <div className="font-display text-xl italic font-light leading-none">
         {editorial.brand}
         <span className="text-chrome">.</span>
       </div>

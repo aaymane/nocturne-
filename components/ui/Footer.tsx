@@ -12,17 +12,17 @@ export function Footer() {
   const { footer } = editorial;
 
   return (
-    <footer id="footer" className="relative border-t border-ink-ghost bg-[#040404] px-[8vw] pb-12 pt-32">
+    <footer id="footer" className="relative border-t border-ink-ghost bg-[#040404] px-[5vw] pb-8 pt-16 sm:px-[6vw] md:px-[8vw] md:pb-12 md:pt-24 lg:pt-32">
       <Reveal>
         <h3 className="font-display font-light leading-[0.9] tracking-[-0.02em]">
-          <span className="block text-[clamp(48px,9vw,144px)]">{footer.headlineLine1}</span>
-          <span className="block text-[clamp(48px,9vw,144px)]">
+          <span className="block text-[clamp(36px,9vw,144px)]">{footer.headlineLine1}</span>
+          <span className="block text-[clamp(36px,9vw,144px)]">
             <em className="italic text-chrome">the next chapter.</em>
           </span>
         </h3>
       </Reveal>
 
-      <div className="mt-24 grid grid-cols-1 gap-12 border-t border-ink-ghost pt-12 md:grid-cols-[2fr_1fr_1fr_1fr]">
+      <div className="mt-12 grid grid-cols-1 gap-8 border-t border-ink-ghost pt-10 sm:grid-cols-2 md:mt-20 md:grid-cols-[2fr_1fr_1fr_1fr] md:gap-12 md:pt-12 lg:mt-24">
         {footer.columns.map((c, i) => (
           <Reveal key={c.title} delay={i * 120}>
             <h6 className="editorial-micro mb-4 font-normal">{c.title}</h6>
@@ -43,7 +43,7 @@ export function Footer() {
       </div>
 
       <Reveal delay={400}>
-        <div className="mt-24 flex flex-col items-start justify-between gap-4 editorial-micro md:flex-row md:items-center">
+        <div className="mt-10 flex flex-col items-start justify-between gap-4 editorial-micro md:mt-16 md:flex-row md:items-center lg:mt-24">
           <span>{footer.copyright}</span>
           <span>Filmed in Paris · Mastered in 24p</span>
         </div>

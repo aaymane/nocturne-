@@ -139,7 +139,7 @@ export function SceneHero() {
           rotation via `perspective` so it feels like a monumental
           object occupying real space. Metadata rides the deepest
           parallax (±75 px) — it floats closest to the viewer. */}
-      <div className="relative z-[3] flex w-full flex-col justify-between px-[8vw] pb-14 pt-32 md:pt-36">
+      <div className="relative z-[3] flex min-h-[100svh] w-full flex-col justify-between px-[5vw] pb-8 pt-20 sm:px-[6vw] sm:pt-24 md:px-[8vw] md:pb-14 md:pt-32 lg:pt-36">
 
         {/* Metadata — closest plane, max parallax */}
         <motion.div
@@ -178,7 +178,7 @@ export function SceneHero() {
           >
             <Reveal as="span" delay={500}>
               <span
-                className="block text-[clamp(64px,14vw,220px)]"
+                className="block text-[clamp(44px,11vw,220px)]"
                 style={{ textShadow: '0 4px 80px rgba(0,0,0,0.45)' }}
               >
                 {hero.line1}
@@ -186,7 +186,7 @@ export function SceneHero() {
             </Reveal>
             <Reveal as="span" delay={800}>
               <span
-                className="block text-[clamp(64px,14vw,220px)] pl-[14vw]"
+                className="block text-[clamp(44px,11vw,220px)] pl-[6vw] md:pl-[14vw]"
                 style={{ textShadow: '0 4px 80px rgba(0,0,0,0.45)' }}
               >
                 for the{' '}
@@ -210,7 +210,7 @@ export function SceneHero() {
 
         {/* Bottom triad — rides metadata depth */}
         <motion.div
-          className="mt-12 grid grid-cols-1 items-end gap-10 md:grid-cols-[1fr_auto_1fr]"
+          className="mt-6 grid grid-cols-1 items-end gap-6 md:mt-12 md:grid-cols-[1fr_auto_1fr] md:gap-10"
           style={{ x: metaX, y: metaY }}
         >
           <Reveal delay={1100}>
@@ -237,7 +237,7 @@ export function SceneHero() {
             <div className="text-right">
               <div className="editorial-label">Tonight</div>
               <div
-                className="mt-2 font-display text-2xl italic font-light text-ink"
+                className="mt-1 font-display text-lg italic font-light text-ink md:mt-2 md:text-2xl"
                 style={{ letterSpacing: '0.02em' }}
               >
                 {time}

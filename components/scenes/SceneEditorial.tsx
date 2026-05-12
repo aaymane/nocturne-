@@ -46,7 +46,7 @@ export function SceneEditorial() {
           driftDuration={30}
         />
 
-        <div className="relative z-[2] flex w-full flex-col justify-between px-[8vw] py-32">
+        <div className="relative z-[2] flex w-full flex-col justify-between px-[5vw] py-16 sm:px-[6vw] sm:py-20 md:px-[8vw] md:py-32">
           {/* TOP — chapter mark + meta */}
           <div className="flex items-start justify-between">
             <Reveal>
@@ -68,26 +68,26 @@ export function SceneEditorial() {
           <h2 className="mt-auto font-display font-light leading-[0.84] tracking-[-0.03em]">
             <motion.span
               style={{ opacity: op1, y: y1 }}
-              className="block text-[clamp(72px,16vw,260px)] text-left"
+              className="block text-[clamp(52px,14vw,260px)] text-left"
             >
               {headlineLine1}
             </motion.span>
             <motion.span
               style={{ opacity: op2, y: y2 }}
-              className="block text-[clamp(72px,16vw,260px)] text-center"
+              className="block text-[clamp(52px,14vw,260px)] text-center"
             >
               <em className="italic text-chrome font-light">{headlineLine2}</em>
             </motion.span>
             <motion.span
               style={{ opacity: op3, y: y3 }}
-              className="block text-[clamp(72px,16vw,260px)] text-right"
+              className="block text-[clamp(52px,14vw,260px)] text-right"
             >
               {headlineLine3}
             </motion.span>
           </h2>
 
           {/* BOTTOM — editorial credits */}
-          <div className="mt-14 grid grid-cols-1 gap-12 text-[13px] leading-[1.7] text-ink-dim md:grid-cols-3">
+          <div className="mt-10 grid grid-cols-1 gap-8 text-[13px] leading-[1.7] text-ink-dim sm:grid-cols-2 md:mt-14 md:grid-cols-3 md:gap-12">
             {columns.map((c, i) => (
               <Reveal key={c.title} delay={300 + i * 150}>
                 <div>

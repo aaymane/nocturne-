@@ -40,8 +40,8 @@ export function SceneDriver() {
           driftDuration={38}
         />
 
-        <div className="relative z-[2] flex w-full items-center px-[8vw] py-32 md:py-0">
-          <div className="grid w-full grid-cols-1 items-center gap-12 md:grid-cols-2 md:gap-20">
+        <div className="relative z-[2] flex w-full items-center px-[5vw] py-20 sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-0">
+          <div className="grid w-full grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-20">
             {/* LEFT — eyebrow + headline with parallax */}
             <motion.div style={{ y, opacity }}>
               <Reveal>
@@ -51,7 +51,7 @@ export function SceneDriver() {
                 </div>
               </Reveal>
               <Reveal delay={150}>
-                <h2 className="font-display text-[clamp(40px,7vw,104px)] font-light italic leading-[0.96] tracking-[-0.01em] whitespace-pre-line">
+                <h2 className="font-display text-[clamp(36px,7vw,104px)] font-light italic leading-[0.96] tracking-[-0.01em] whitespace-pre-line">
                   {headline}
                 </h2>
               </Reveal>

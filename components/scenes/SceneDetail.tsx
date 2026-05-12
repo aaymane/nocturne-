@@ -29,7 +29,7 @@ export function SceneDetail() {
             'radial-gradient(ellipse 55% 60% at 25% 40%, rgba(216,201,168,0.028) 0%, transparent 65%)',
         }}
       />
-      <div className="relative z-[2] grid grid-cols-1 gap-[8vw] px-[8vw] py-40 md:grid-cols-[1.1fr_1fr]">
+      <div className="relative z-[2] grid grid-cols-1 gap-[8vw] px-[5vw] py-16 sm:px-[6vw] sm:py-20 md:px-[8vw] md:py-28 lg:py-40 md:grid-cols-[1.1fr_1fr]">
         {/* LEFT — sticky display headline */}
         <div className="md:sticky md:top-[18vh] md:self-start">
           <Reveal>
@@ -39,7 +39,7 @@ export function SceneDetail() {
             </div>
           </Reveal>
           <Reveal delay={200}>
-            <h2 className="font-display text-[clamp(54px,10vw,160px)] font-light leading-[0.88] tracking-[-0.02em]">
+            <h2 className="font-display text-[clamp(40px,10vw,160px)] font-light leading-[0.88] tracking-[-0.02em]">
               {headlinePrefix}{' '}
               <em className="italic text-chrome font-light">{headlineEm}</em>
               <span className="mt-12 block font-sans text-[11px] uppercase tracking-wider text-ink-dim normal-case font-normal">
@@ -86,7 +86,7 @@ export function SceneDetail() {
                 <li
                   key={item.n}
                   data-hover
-                  className="grid grid-cols-[60px_1fr_auto] items-baseline gap-6 border-b border-ink-ghost py-6 text-[13px] text-ink-dim transition-colors duration-700 ease-cinematic hover:text-ink"
+                  className="grid grid-cols-[40px_1fr_auto] items-baseline gap-4 border-b border-ink-ghost py-5 text-[13px] text-ink-dim transition-colors duration-700 ease-cinematic hover:text-ink md:grid-cols-[60px_1fr_auto] md:gap-6 md:py-6"
                   style={{ transitionDelay: `${i * 60}ms` }}
                 >
                   <span className="font-display italic text-chrome">{item.n}</span>
