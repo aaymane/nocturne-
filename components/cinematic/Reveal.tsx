@@ -1,68 +1,94 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import {
+  ElementType,
+  ReactNode,
+  CSSProperties,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-interface RevealProps {
+type RevealProps = {
+  as?: ElementType;
   children: ReactNode;
-  /** Delay in milliseconds. Stagger nearby elements by 100–300ms for editorial pacing. */
-  delay?: number;
-  /** Custom intersection threshold (default 0.15). */
-  threshold?: number;
-  /** If true, animates only the first time. Default true. */
-  once?: boolean;
-  /** Extra classes for the wrapper. */
   className?: string;
-  as?: keyof JSX.IntrinsicElements;
-}
+  style?: CSSProperties;
+  /** Delay in milliseconds — stagger nearby reveals for editorial pacing. */
+  delay?: number;
+  /** IntersectionObserver threshold (default 0.15). */
+  threshold?: number;
+  /** Animate only on the first intersection. Default true. */
+  once?: boolean;
+};
 
-/**
- * IntersectionObserver-based reveal. Initial state is set by `.reveal-init`
- * in globals.css; the observer flips `.in` when the element enters the
- * viewport, triggering a long, cinematic transition (opacity + Y + blur).
- *
- * Kept hand-rolled instead of using framer-motion's whileInView because:
- *  - it lives outside React render on subsequent updates, lighter on perf
- *  - the blur-to-clear transition reads better as a single CSS keyframe set
- */
-export function Reveal({
-  children,
-  delay = 0,
-  threshold = 0.15,
-  once = true,
-  className = '',
-  as: Tag = 'div',
-}: RevealProps) {
-  const ref = useRef<HTMLElement>(null);
-  const [shown, setShown] = useState(false);
+const Reveal = forwardRef<HTMLElement, RevealProps>(
+  (
+    {
+      as: Tag = 'div',
+      children,
+      className = '',
+      style,
+      delay = 0,
+      threshold = 0.15,
+      once = true,
+    },
+    forwardedRef,
+  ) => {
+    const innerRef = useRef<HTMLElement>(null);
+    const [shown, setShown] = useState(false);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShown(true);
-          if (once) io.disconnect();
-        } else if (!once) {
-          setShown(false);
+    // Merge the internal observer ref with any forwarded ref so both work.
+    const setRef = useCallback(
+      (node: HTMLElement | null) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (innerRef as any).current = node;
+        if (typeof forwardedRef === 'function') {
+          forwardedRef(node);
+        } else if (forwardedRef != null) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (forwardedRef as any).current = node;
         }
       },
-      { threshold, rootMargin: '0px 0px -10% 0px' },
+      [forwardedRef],
     );
 
-    io.observe(el);
-    return () => io.disconnect();
-  }, [threshold, once]);
+    useEffect(() => {
+      const el = innerRef.current;
+      if (!el) return;
 
-  const style: CSSProperties = { transitionDelay: `${delay}ms` };
-  const cls = `reveal-init ${shown ? 'in' : ''} ${className}`.trim();
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setShown(true);
+            if (once) io.disconnect();
+          } else if (!once) {
+            setShown(false);
+          }
+        },
+        { threshold, rootMargin: '0px 0px -10% 0px' },
+      );
 
-  return (
-    // The `as` cast is necessary because TS can't narrow the generic tag here.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <Tag ref={ref as any} className={cls} style={style}>
-      {children}
-    </Tag>
-  );
-}
+      io.observe(el);
+      return () => io.disconnect();
+    }, [threshold, once]);
+
+    const mergedStyle: CSSProperties = { transitionDelay: `${delay}ms`, ...style };
+    const cls = `reveal-init ${shown ? 'in' : ''} ${className}`.trim();
+
+    return (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      <Tag ref={setRef as any} className={cls} style={mergedStyle}>
+        {children}
+      </Tag>
+    );
+  },
+);
+
+Reveal.displayName = 'Reveal';
+
+// Named export kept for existing `import { Reveal }` call-sites.
+export { Reveal };
+export default Reveal;
