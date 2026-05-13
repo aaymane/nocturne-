@@ -99,11 +99,12 @@ export default function ReservePage() {
         {/* ── SECTION 1: Hero ─────────────────────────────────────── */}
         <section className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden">
           <Image
-            src="/products/04-packaging.png"
+            src="/products/04-packaging.webp"
             alt="The Nightcrest Cap — packaging"
             fill
             priority
-            quality={95}
+            quality={85}
+            sizes="100vw"
             className="object-cover"
           />
           <div aria-hidden className="absolute inset-0 bg-black/70" />
@@ -163,10 +164,11 @@ export default function ReservePage() {
                   style={{ maxWidth: 320, aspectRatio: '1 / 1' }}
                 >
                   <Image
-                    src="/products/01-hero-studio.png"
+                    src="/products/01-hero-studio.webp"
                     alt="The Nightcrest Cap — studio"
                     fill
-                    quality={95}
+                    quality={85}
+                    sizes="(max-width: 767px) 100vw, 320px"
                     className="object-cover"
                   />
                 </div>

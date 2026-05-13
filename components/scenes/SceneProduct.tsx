@@ -41,11 +41,12 @@ export function SceneProduct() {
         <motion.div className="absolute inset-0" style={{ y: heroY }}>
           <div className="relative h-[130%] -top-[15%]">
             <Image
-              src="/products/02-hero-paris-night.png"
+              src="/products/02-hero-paris-night.webp"
               alt="The Nightcrest Cap — Paris at night"
               fill
               priority
-              quality={95}
+              quality={85}
+              sizes="100vw"
               className="object-cover"
             />
           </div>
@@ -89,10 +90,11 @@ export function SceneProduct() {
               style={{ aspectRatio: '4 / 5' }}
             >
               <Image
-                src="/products/01-hero-studio.png"
+                src="/products/01-hero-studio.webp"
                 alt="The Nightcrest Cap — studio"
                 fill
-                quality={95}
+                quality={85}
+                sizes="(max-width: 767px) 100vw, 45vw"
                 className="object-cover"
               />
               {/* Subtle chrome warmth on hover */}
@@ -195,10 +197,11 @@ export function SceneProduct() {
           <Reveal>
             <div className="relative min-h-[60svh] overflow-hidden md:min-h-[80svh]">
               <Image
-                src="/products/03-worn-paris.png"
+                src="/products/03-worn-paris.webp"
                 alt="The Nightcrest Cap — worn in Paris"
                 fill
-                quality={95}
+                quality={85}
+                sizes="(max-width: 767px) 100vw, 50vw"
                 className="object-cover"
               />
             </div>
@@ -222,10 +225,11 @@ export function SceneProduct() {
             style={{ aspectRatio: '4 / 3' }}
           >
             <Image
-              src="/products/04-packaging.png"
+              src="/products/04-packaging.webp"
               alt="The Nightcrest Cap — packaging"
               fill
-              quality={95}
+              quality={85}
+              sizes="(max-width: 767px) 100vw, 768px"
               className="object-cover"
             />
           </div>
