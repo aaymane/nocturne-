@@ -36,11 +36,16 @@ type FormState = {
   notes:   string;
 };
 
-/* ─── Shared style tokens ───────────────────────────────────────────── */
+type RequiredField = 'name' | 'email' | 'country' | 'size';
 
-const inputCls =
-  'w-full bg-transparent border-b border-ink-ghost py-4 text-[13px] text-ink ' +
-  'placeholder:text-ink-faint focus:border-ink outline-none ' +
+const REQUIRED: RequiredField[] = ['name', 'email', 'country', 'size'];
+
+/* ─── Style helpers ─────────────────────────────────────────────────── */
+
+// Base without border-color so errors can swap it in
+const inputBase =
+  'w-full bg-transparent border-b py-4 text-[13px] text-ink ' +
+  'placeholder:text-ink-faint focus:outline-none ' +
   'transition-colors duration-700 ease-cinematic';
 
 const labelCls = 'editorial-label text-ink-faint mb-2 block';
@@ -52,16 +57,38 @@ export default function ReservePage() {
     name: '', email: '', country: '', size: '', notes: '',
   });
   const [submitted, setSubmitted] = useState(false);
+  const [errors, setErrors] = useState<Set<RequiredField>>(new Set());
 
+  // On change: update value + clear per-field error
   const set =
     (k: keyof FormState) =>
-    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
       setForm((prev) => ({ ...prev, [k]: e.target.value }));
+      if (REQUIRED.includes(k as RequiredField)) {
+        setErrors((prev) => {
+          const next = new Set(prev);
+          next.delete(k as RequiredField);
+          return next;
+        });
+      }
+    };
+
+  // Border-bottom: error red (subtle) or default ghost
+  const fieldCls = (k: RequiredField, extra = '') =>
+    `${inputBase} ${errors.has(k) ? 'border-red-500/40' : 'border-ink-ghost'} ${extra}`.trim();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const missing = REQUIRED.filter((k) => !form[k].trim());
+    if (missing.length > 0) {
+      setErrors(new Set(missing));
+      return;
+    }
+    setErrors(new Set());
     setSubmitted(true);
   };
+
+  const hasErrors = errors.size > 0;
 
   return (
     <>
@@ -70,7 +97,7 @@ export default function ReservePage() {
       <main className="relative bg-night">
 
         {/* ── SECTION 1: Hero ─────────────────────────────────────── */}
-        <section className="relative min-h-screen w-full overflow-hidden">
+        <section className="relative flex min-h-[70vh] w-full items-center justify-center overflow-hidden">
           <Image
             src="/products/04-packaging.png"
             alt="The Nightcrest Cap — packaging"
@@ -79,38 +106,35 @@ export default function ReservePage() {
             quality={95}
             className="object-cover"
           />
-          <div
-            aria-hidden
-            className="absolute inset-0"
-            style={{ background: 'rgba(5,5,5,0.70)' }}
-          />
+          <div aria-hidden className="absolute inset-0 bg-black/70" />
 
-          <div className="relative z-[2] flex min-h-screen flex-col items-center justify-center px-[5vw] py-32 text-center">
+          <div className="relative z-[2] flex flex-col items-center px-[5vw] py-20 text-center">
             <Reveal>
-              <div className="editorial-label mb-8 inline-flex items-center gap-3 text-chrome">
+              <div className="editorial-label mb-8 flex items-center gap-3 text-ink-faint">
                 <span className="block h-px w-9 bg-chrome" />
                 Reservation
-                <span className="block h-px w-9 bg-chrome" />
               </div>
             </Reveal>
 
             <Reveal delay={200}>
               <h1 className="font-display font-light leading-[0.88] tracking-[-0.02em] text-[clamp(40px,8vw,120px)]">
-                The Nightcrest Cap
+                The{' '}
+                <em className="font-light italic text-chrome">Nightcrest</em>
+                {' '}Cap
               </h1>
             </Reveal>
 
             <Reveal delay={400}>
-              <p className="mt-4 editorial-label text-ink-dim">
+              <p className="mt-4 text-sm uppercase tracking-wider text-ink-dim">
                 Edition 01 — 200 numbered pieces
               </p>
             </Reveal>
 
-            <Reveal delay={500}>
-              <div className="mt-10 h-px w-16 bg-chrome opacity-60" />
+            <Reveal delay={600}>
+              <div className="mt-8 h-px w-12 bg-chrome opacity-60" />
             </Reveal>
 
-            <Reveal delay={600}>
+            <Reveal delay={800}>
               <p className="mt-8 max-w-md text-[13px] leading-[1.9] text-ink-dim">
                 Each piece is hand-finished in Paris. Production begins after reservation.
                 <br />
@@ -120,7 +144,7 @@ export default function ReservePage() {
           </div>
         </section>
 
-        {/* ── SECTION 2: Form ─────────────────────────────────────── */}
+        {/* ── SECTION 2: Recap + Form ──────────────────────────────── */}
         <section className="relative z-[2] px-[5vw] py-20 sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-32">
           <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-[6vw]">
 
@@ -161,7 +185,7 @@ export default function ReservePage() {
                       key={item}
                       className="editorial-label flex items-center gap-2 text-ink-dim"
                     >
-                      <span className="block h-px w-4 bg-ink-faint flex-shrink-0" />
+                      <span className="block h-px w-4 flex-shrink-0 bg-ink-faint" />
                       {item}
                     </li>
                   ))}
@@ -196,18 +220,17 @@ export default function ReservePage() {
 
                 /* ── Form ── */
                 <Reveal delay={100}>
-                  <form onSubmit={onSubmit} className="flex flex-col gap-10" noValidate={false}>
+                  <form onSubmit={onSubmit} noValidate className="flex flex-col gap-10">
 
                     {/* Full name */}
                     <div>
                       <label className={labelCls}>Full name</label>
                       <input
                         type="text"
-                        required
                         placeholder="Your full name"
                         value={form.name}
                         onChange={set('name')}
-                        className={inputCls}
+                        className={fieldCls('name')}
                       />
                     </div>
 
@@ -216,11 +239,10 @@ export default function ReservePage() {
                       <label className={labelCls}>Email</label>
                       <input
                         type="email"
-                        required
                         placeholder="your@email.com"
                         value={form.email}
                         onChange={set('email')}
-                        className={inputCls}
+                        className={fieldCls('email')}
                       />
                     </div>
 
@@ -229,10 +251,9 @@ export default function ReservePage() {
                       <label className={labelCls}>Country</label>
                       <div className="relative">
                         <select
-                          required
                           value={form.country}
                           onChange={set('country')}
-                          className={`${inputCls} appearance-none cursor-pointer pr-6`}
+                          className={fieldCls('country', 'appearance-none cursor-pointer pr-6')}
                         >
                           <option value="" disabled>Select your country</option>
                           {COUNTRIES.map((c) => (
@@ -252,10 +273,9 @@ export default function ReservePage() {
                       <label className={labelCls}>Size</label>
                       <div className="relative">
                         <select
-                          required
                           value={form.size}
                           onChange={set('size')}
-                          className={`${inputCls} appearance-none cursor-pointer pr-6`}
+                          className={fieldCls('size', 'appearance-none cursor-pointer pr-6')}
                         >
                           <option value="" disabled>Select your size</option>
                           {SIZES.map((s) => (
@@ -270,7 +290,7 @@ export default function ReservePage() {
                       </div>
                     </div>
 
-                    {/* Notes */}
+                    {/* Notes — optional, no validation */}
                     <div>
                       <label className={labelCls}>
                         Notes{' '}
@@ -281,12 +301,19 @@ export default function ReservePage() {
                         rows={3}
                         value={form.notes}
                         onChange={set('notes')}
-                        className={`${inputCls} resize-none`}
+                        className={`${inputBase} border-ink-ghost resize-none`}
                       />
                     </div>
 
-                    {/* Submit */}
+                    {/* Submit area */}
                     <div className="flex flex-col gap-4 pt-2">
+                      {/* Global validation message */}
+                      {hasErrors && (
+                        <p className="text-center text-[11px] uppercase tracking-editorial text-red-400/60">
+                          Please complete all required fields
+                        </p>
+                      )}
+
                       <button
                         type="submit"
                         className="group flex w-full items-center justify-between border border-ink-ghost px-8 py-5 text-[12px] uppercase tracking-editorial text-ink transition-colors duration-1200 ease-cinematic hover:bg-ink hover:text-night"
@@ -296,6 +323,7 @@ export default function ReservePage() {
                           →
                         </span>
                       </button>
+
                       <p className="editorial-micro text-center text-ink-faint">
                         By reserving, you agree to be contacted within 48h to confirm details.
                         No payment is taken now.
