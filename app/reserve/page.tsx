@@ -1,0 +1,318 @@
+'use client';
+
+import { useState, type FormEvent, type ChangeEvent } from 'react';
+import Image from 'next/image';
+import { Navigation } from '@/components/ui/Navigation';
+import { Footer } from '@/components/ui/Footer';
+import { Reveal } from '@/components/cinematic/Reveal';
+
+/* ─── Data ──────────────────────────────────────────────────────────── */
+
+const COUNTRIES = [
+  'France', 'Belgium', 'Switzerland', 'United Kingdom',
+  'United States', 'Italy', 'Germany', 'Spain', 'Other',
+];
+
+const SIZES = [
+  { value: 'S',  label: 'S — 56cm' },
+  { value: 'M',  label: 'M — 58cm' },
+  { value: 'L',  label: 'L — 60cm' },
+  { value: 'XL', label: 'XL — 62cm' },
+];
+
+const RECAP_ITEMS = [
+  '200 pieces · numbered',
+  'Worldwide shipping · 5-7 days',
+  'Crafted in Paris',
+];
+
+/* ─── Types ─────────────────────────────────────────────────────────── */
+
+type FormState = {
+  name:    string;
+  email:   string;
+  country: string;
+  size:    string;
+  notes:   string;
+};
+
+/* ─── Shared style tokens ───────────────────────────────────────────── */
+
+const inputCls =
+  'w-full bg-transparent border-b border-ink-ghost py-4 text-[13px] text-ink ' +
+  'placeholder:text-ink-faint focus:border-ink outline-none ' +
+  'transition-colors duration-700 ease-cinematic';
+
+const labelCls = 'editorial-label text-ink-faint mb-2 block';
+
+/* ─── Page ──────────────────────────────────────────────────────────── */
+
+export default function ReservePage() {
+  const [form, setForm] = useState<FormState>({
+    name: '', email: '', country: '', size: '', notes: '',
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const set =
+    (k: keyof FormState) =>
+    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      setForm((prev) => ({ ...prev, [k]: e.target.value }));
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  return (
+    <>
+      <Navigation />
+
+      <main className="relative bg-night">
+
+        {/* ── SECTION 1: Hero ─────────────────────────────────────── */}
+        <section className="relative min-h-screen w-full overflow-hidden">
+          <Image
+            src="/products/04-packaging.png"
+            alt="The Nightcrest Cap — packaging"
+            fill
+            priority
+            quality={95}
+            className="object-cover"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{ background: 'rgba(5,5,5,0.70)' }}
+          />
+
+          <div className="relative z-[2] flex min-h-screen flex-col items-center justify-center px-[5vw] py-32 text-center">
+            <Reveal>
+              <div className="editorial-label mb-8 inline-flex items-center gap-3 text-chrome">
+                <span className="block h-px w-9 bg-chrome" />
+                Reservation
+                <span className="block h-px w-9 bg-chrome" />
+              </div>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <h1 className="font-display font-light leading-[0.88] tracking-[-0.02em] text-[clamp(40px,8vw,120px)]">
+                The Nightcrest Cap
+              </h1>
+            </Reveal>
+
+            <Reveal delay={400}>
+              <p className="mt-4 editorial-label text-ink-dim">
+                Edition 01 — 200 numbered pieces
+              </p>
+            </Reveal>
+
+            <Reveal delay={500}>
+              <div className="mt-10 h-px w-16 bg-chrome opacity-60" />
+            </Reveal>
+
+            <Reveal delay={600}>
+              <p className="mt-8 max-w-md text-[13px] leading-[1.9] text-ink-dim">
+                Each piece is hand-finished in Paris. Production begins after reservation.
+                <br />
+                Estimated delivery&nbsp;: 4-6 weeks.
+              </p>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ── SECTION 2: Form ─────────────────────────────────────── */}
+        <section className="relative z-[2] px-[5vw] py-20 sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-32">
+          <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-[6vw]">
+
+            {/* LEFT — sticky order recap */}
+            <div className="md:sticky md:top-[15vh] md:self-start">
+              <Reveal>
+                <div className="editorial-label mb-8 flex items-center gap-3 text-chrome">
+                  <span className="block h-px w-9 bg-chrome" />
+                  Your Edition
+                </div>
+              </Reveal>
+
+              <Reveal delay={100}>
+                <div
+                  className="relative mb-8 overflow-hidden border border-ink-ghost"
+                  style={{ maxWidth: 320, aspectRatio: '1 / 1' }}
+                >
+                  <Image
+                    src="/products/01-hero-studio.png"
+                    alt="The Nightcrest Cap — studio"
+                    fill
+                    quality={95}
+                    className="object-cover"
+                  />
+                </div>
+              </Reveal>
+
+              <Reveal delay={200}>
+                <p className="mb-3 text-[13px] text-ink">
+                  The Nightcrest Cap — Edition 01
+                </p>
+                <p className="font-display font-light tracking-[-0.02em] text-[clamp(28px,4vw,48px)]">
+                  €380
+                </p>
+                <ul className="mt-6 flex flex-col gap-3 border-t border-ink-ghost pt-6">
+                  {RECAP_ITEMS.map((item) => (
+                    <li
+                      key={item}
+                      className="editorial-label flex items-center gap-2 text-ink-dim"
+                    >
+                      <span className="block h-px w-4 bg-ink-faint flex-shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+            </div>
+
+            {/* RIGHT — form or success state */}
+            <div>
+              <Reveal>
+                <div className="editorial-label mb-10 flex items-center gap-3 text-chrome">
+                  <span className="block h-px w-9 bg-chrome" />
+                  Reservation Details
+                </div>
+              </Reveal>
+
+              {submitted ? (
+
+                /* ── Success ── */
+                <Reveal>
+                  <div className="border border-ink-ghost p-10 text-center">
+                    <p className="font-display font-light italic text-[clamp(20px,3vw,32px)] text-chrome">
+                      Your reservation has been received.
+                    </p>
+                    <p className="mt-4 text-[13px] leading-[1.9] text-ink-dim">
+                      We'll be in touch within 48 hours.
+                    </p>
+                  </div>
+                </Reveal>
+
+              ) : (
+
+                /* ── Form ── */
+                <Reveal delay={100}>
+                  <form onSubmit={onSubmit} className="flex flex-col gap-10" noValidate={false}>
+
+                    {/* Full name */}
+                    <div>
+                      <label className={labelCls}>Full name</label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Your full name"
+                        value={form.name}
+                        onChange={set('name')}
+                        className={inputCls}
+                      />
+                    </div>
+
+                    {/* Email */}
+                    <div>
+                      <label className={labelCls}>Email</label>
+                      <input
+                        type="email"
+                        required
+                        placeholder="your@email.com"
+                        value={form.email}
+                        onChange={set('email')}
+                        className={inputCls}
+                      />
+                    </div>
+
+                    {/* Country */}
+                    <div>
+                      <label className={labelCls}>Country</label>
+                      <div className="relative">
+                        <select
+                          required
+                          value={form.country}
+                          onChange={set('country')}
+                          className={`${inputCls} appearance-none cursor-pointer pr-6`}
+                        >
+                          <option value="" disabled>Select your country</option>
+                          {COUNTRIES.map((c) => (
+                            <option key={c} value={c} className="bg-night text-ink">
+                              {c}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute bottom-[18px] right-0 text-[10px] text-ink-faint">
+                          ▾
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Size */}
+                    <div>
+                      <label className={labelCls}>Size</label>
+                      <div className="relative">
+                        <select
+                          required
+                          value={form.size}
+                          onChange={set('size')}
+                          className={`${inputCls} appearance-none cursor-pointer pr-6`}
+                        >
+                          <option value="" disabled>Select your size</option>
+                          {SIZES.map((s) => (
+                            <option key={s.value} value={s.value} className="bg-night text-ink">
+                              {s.label}
+                            </option>
+                          ))}
+                        </select>
+                        <span className="pointer-events-none absolute bottom-[18px] right-0 text-[10px] text-ink-faint">
+                          ▾
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Notes */}
+                    <div>
+                      <label className={labelCls}>
+                        Notes{' '}
+                        <span className="normal-case text-ink-faint">(optional)</span>
+                      </label>
+                      <textarea
+                        placeholder="Any specific request ?"
+                        rows={3}
+                        value={form.notes}
+                        onChange={set('notes')}
+                        className={`${inputCls} resize-none`}
+                      />
+                    </div>
+
+                    {/* Submit */}
+                    <div className="flex flex-col gap-4 pt-2">
+                      <button
+                        type="submit"
+                        className="group flex w-full items-center justify-between border border-ink-ghost px-8 py-5 text-[12px] uppercase tracking-editorial text-ink transition-colors duration-1200 ease-cinematic hover:bg-ink hover:text-night"
+                      >
+                        <span>Confirm reservation</span>
+                        <span className="transition-transform duration-700 ease-cinematic group-hover:translate-x-1">
+                          →
+                        </span>
+                      </button>
+                      <p className="editorial-micro text-center text-ink-faint">
+                        By reserving, you agree to be contacted within 48h to confirm details.
+                        No payment is taken now.
+                      </p>
+                    </div>
+
+                  </form>
+                </Reveal>
+
+              )}
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <Footer />
+    </>
+  );
+}
