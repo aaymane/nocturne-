@@ -1,78 +1,206 @@
 'use client';
 
-import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
- * Luxury cursor. A thin ring damped by a Framer Motion spring so it
- * trails the pointer with a slight, cinematic lag. Expands and softens
- * over any [data-hover] element. Uses mix-blend-difference so it remains
- * legible against both the dark UI chrome and the bright video footage.
+ * Luxury cursor — two-layer design:
+ *   Dot  : 4 px solid point, follows mouse INSTANTLY (no interpolation)
+ *   Ring : 32 px outline, lerp 0.18 for a subtle cinematic trail
  *
- * Hidden entirely on touch via the .luxury-cursor utility (in globals.css).
+ * All position updates bypass React state and go directly to DOM via rAF
+ * to guarantee 60 fps without re-render overhead.
+ *
+ * mix-blend-mode: difference keeps both elements legible on dark AND light
+ * surfaces (nav, video highlights, editorial sections).
  */
+
+const LERP       = 0.18;
+const EASE_OUT   = 'cubic-bezier(0.16, 0.84, 0.30, 1)';
+
+// Ring default / hover appearance
+const RING_DEFAULT = {
+  width:   '32px', height:  '32px',
+  left:    '-16px', top:    '-16px',
+  borderColor:     'rgba(245,245,245,0.38)',
+  backgroundColor: 'transparent',
+};
+const RING_HOVER = {
+  width:   '56px', height:  '56px',
+  left:    '-28px', top:    '-28px',
+  borderColor:     'transparent',
+  backgroundColor: 'rgba(245,245,245,0.10)',
+};
+
 export function LuxuryCursor() {
-  const x = useMotionValue(-100);
-  const y = useMotionValue(-100);
-
-  // Soft spring — the cursor should *float* toward the pointer, not snap.
-  const springX = useSpring(x, { damping: 28, stiffness: 240, mass: 0.6 });
-  const springY = useSpring(y, { damping: 28, stiffness: 240, mass: 0.6 });
-
-  const [hovering, setHovering] = useState(false);
-  const [visible, setVisible] = useState(false);
+  const dotWrapRef  = useRef<HTMLDivElement>(null);
+  const ringWrapRef = useRef<HTMLDivElement>(null);
+  const dotInnerRef  = useRef<HTMLDivElement>(null);
+  const ringInnerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onMove = (e: PointerEvent) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
-      if (!visible) setVisible(true);
-    };
-    const onOver = (e: PointerEvent) => {
-      const target = e.target as HTMLElement | null;
-      setHovering(!!target?.closest('[data-hover]'));
-    };
-    const onLeave = () => setVisible(false);
+    const dotWrap   = dotWrapRef.current;
+    const ringWrap  = ringWrapRef.current;
+    const dotInner  = dotInnerRef.current;
+    const ringInner = ringInnerRef.current;
+    if (!dotWrap || !ringWrap || !dotInner || !ringInner) return;
 
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerover', onOver);
+    // Mutable state — never triggers React renders
+    let mouseX   = -200, mouseY  = -200;
+    let ringX    = -200, ringY   = -200;
+    let visible  = false;
+    let hovering = false;
+    let onInput  = false;
+    let raf      = 0;
+
+    /* ── helpers ─────────────────────────────────────────── */
+
+    const showCursors = (on: boolean) => {
+      const v = on ? '1' : '0';
+      dotInner.style.opacity  = v;
+      ringInner.style.opacity = v;
+    };
+
+    const applyRingState = (hover: boolean) => {
+      const s = hover ? RING_HOVER : RING_DEFAULT;
+      ringInner.style.width           = s.width;
+      ringInner.style.height          = s.height;
+      ringInner.style.left            = s.left;
+      ringInner.style.top             = s.top;
+      ringInner.style.borderColor     = s.borderColor;
+      ringInner.style.backgroundColor = s.backgroundColor;
+    };
+
+    /* ── rAF loop ─────────────────────────────────────────── */
+
+    const tick = () => {
+      // Dot: instant — set each frame regardless (ensures first-frame sync)
+      dotWrap.style.transform = `translate(${mouseX}px,${mouseY}px)`;
+
+      // Ring: lerp
+      ringX += (mouseX - ringX) * LERP;
+      ringY += (mouseY - ringY) * LERP;
+      ringWrap.style.transform = `translate(${ringX}px,${ringY}px)`;
+
+      raf = requestAnimationFrame(tick);
+    };
+
+    /* ── event handlers ───────────────────────────────────── */
+
+    const onMove = (e: PointerEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!visible) {
+        visible = true;
+        if (!onInput) showCursors(true);
+      }
+    };
+
+    const onOver = (e: PointerEvent) => {
+      const t = e.target as Element | null;
+      const isHover = !!t?.closest('a, button, [data-hover]');
+      const isInput = !!t?.closest('input, textarea, select');
+
+      if (isInput !== onInput) {
+        onInput = isInput;
+        if (visible) showCursors(!isInput);
+      }
+      if (isHover !== hovering) {
+        hovering = isHover;
+        applyRingState(hovering);
+      }
+    };
+
+    // Dot retracts on press — gives tactile feedback
+    const onDown = () => { dotInner.style.transform = 'scale(0.65)'; };
+    const onUp   = () => { dotInner.style.transform = 'scale(1)';   };
+
+    const onLeave = () => {
+      visible = false;
+      showCursors(false);
+    };
+
+    window.addEventListener('pointermove',  onMove, { passive: true });
+    window.addEventListener('pointerover',  onOver, { passive: true });
+    window.addEventListener('pointerdown',  onDown, { passive: true });
+    window.addEventListener('pointerup',    onUp,   { passive: true });
     document.documentElement.addEventListener('pointerleave', onLeave);
 
+    raf = requestAnimationFrame(tick);
+
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerover', onOver);
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup',   onUp);
       document.documentElement.removeEventListener('pointerleave', onLeave);
     };
-  }, [x, y, visible]);
+  }, []);
+
+  // Shared transition for visual-state changes (NOT for position — that's rAF)
+  const stateTransition = [
+    `opacity 400ms ${EASE_OUT}`,
+    `transform 150ms ${EASE_OUT}`,
+  ].join(', ');
+
+  const ringTransition = [
+    `opacity 400ms ${EASE_OUT}`,
+    `width 250ms ${EASE_OUT}`,
+    `height 250ms ${EASE_OUT}`,
+    `left 250ms ${EASE_OUT}`,
+    `top 250ms ${EASE_OUT}`,
+    `border-color 250ms ${EASE_OUT}`,
+    `background-color 250ms ${EASE_OUT}`,
+  ].join(', ');
 
   return (
-    <motion.div
-      aria-hidden
-      className="luxury-cursor pointer-events-none fixed left-0 top-0 z-[100] rounded-full backdrop-blur-[2px]"
-      style={{
-        x: springX,
-        y: springY,
-        translateX: '-50%',
-        translateY: '-50%',
-        mixBlendMode: 'difference',
-      }}
-      animate={{
-        width: hovering ? 78 : 34,
-        height: hovering ? 78 : 34,
-        borderColor: hovering ? 'rgba(245,245,245,0.85)' : 'rgba(245,245,245,0.55)',
-        backgroundColor: hovering ? 'rgba(245,245,245,0.08)' : 'rgba(245,245,245,0)',
-        opacity: visible ? 1 : 0,
-      }}
-      transition={{
-        width: { duration: 0.45, ease: [0.16, 0.84, 0.3, 1] },
-        height: { duration: 0.45, ease: [0.16, 0.84, 0.3, 1] },
-        backgroundColor: { duration: 0.45 },
-        borderColor: { duration: 0.45 },
-        opacity: { duration: 0.3 },
-      }}
-    >
-      <span className="border border-current absolute inset-0 rounded-full" />
-      <span className="absolute left-1/2 top-1/2 h-[3px] w-[3px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink" />
-    </motion.div>
+    <>
+      {/* ── Dot wrapper — instant position, no transition on transform ── */}
+      <div
+        ref={dotWrapRef}
+        aria-hidden
+        className="luxury-cursor pointer-events-none fixed left-0 top-0 z-[9999]"
+        style={{ willChange: 'transform', mixBlendMode: 'difference' }}
+      >
+        <div
+          ref={dotInnerRef}
+          style={{
+            position:        'absolute',
+            width:           4,
+            height:          4,
+            left:            -2,
+            top:             -2,
+            borderRadius:    '50%',
+            backgroundColor: '#f5f5f5',
+            opacity:         0,
+            transition:      stateTransition,
+          }}
+        />
+      </div>
+
+      {/* ── Ring wrapper — lerp position, no transition on transform ── */}
+      <div
+        ref={ringWrapRef}
+        aria-hidden
+        className="luxury-cursor pointer-events-none fixed left-0 top-0 z-[9999]"
+        style={{ willChange: 'transform', mixBlendMode: 'difference' }}
+      >
+        <div
+          ref={ringInnerRef}
+          style={{
+            position:        'absolute',
+            width:           32,
+            height:          32,
+            left:            -16,
+            top:             -16,
+            borderRadius:    '50%',
+            border:          '1px solid rgba(245,245,245,0.38)',
+            backgroundColor: 'transparent',
+            opacity:         0,
+            transition:      ringTransition,
+          }}
+        />
+      </div>
+    </>
   );
 }
