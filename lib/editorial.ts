@@ -3,6 +3,50 @@
  * don't touch component files.
  */
 
+export const sceneProduct = {
+  eyebrow: 'EDITION 01 / Available now',
+  productName: 'The Nightcrest Cap',
+  productSubtitle: 'Edition 01 — Paris',
+  price: '€380',
+  edition: '200 pieces · numbered',
+  shipping: 'Worldwide · 5-7 days',
+  tagline: 'Conceived as an object of cinema.',
+
+  descriptionLines: [
+    'Nappa leather, combed wool, embroidered thread-on-thread.',
+    'Built for the night, the rain, the movement.',
+    'Crafted in Paris, 8th arrondissement.',
+    '200 pieces. Numbered. Final.',
+  ],
+
+  specs: [
+    { label: 'Main material', value: 'Black matte nappa leather' },
+    { label: 'Side panels',   value: 'Combed black wool' },
+    { label: 'Visor',         value: 'Matte black leather' },
+    { label: 'Hardware',      value: 'Brushed satin chrome' },
+    { label: 'Lining',        value: 'Anthracite satin' },
+    { label: 'Sweatband',     value: 'Perforated leather' },
+    { label: 'Origin',        value: 'Made in France' },
+    { label: 'Edition',       value: '200 numbered pieces' },
+  ],
+
+  worn: {
+    title: 'After dark',
+    body:  'Built for the silhouette in motion. The collar up, the streets wet, the city quiet. The Nightcrest sits low, weighted, signed in shadow.',
+  },
+
+  packaging: {
+    title: 'The object, edited.',
+    body:  'Each piece arrives in a matte black box, lined in anthracite satin. Inside : a numbered certificate, a wax-sealed envelope, a velvet pouch. The full ritual.',
+  },
+
+  cta: {
+    label:   'Reserve your edition',
+    subtext: '200 pieces · No restock',
+    href:    '/reserve',
+  },
+};
+
 export const editorial = {
   brand: 'Nocturne',
   volume: 'Volume 01 — Nocturne',

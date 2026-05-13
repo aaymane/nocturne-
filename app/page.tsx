@@ -3,6 +3,7 @@ import { SceneHero } from '@/components/scenes/SceneHero';
 import { SceneDriver } from '@/components/scenes/SceneDriver';
 import { SceneDetail } from '@/components/scenes/SceneDetail';
 import { SceneEditorial } from '@/components/scenes/SceneEditorial';
+import { SceneProduct } from '@/components/scenes/SceneProduct';
 import { Footer } from '@/components/ui/Footer';
 
 /**
@@ -22,6 +23,7 @@ export default function HomePage() {
       <SceneDriver />
       <SceneDetail />
       <SceneEditorial />
+      <SceneProduct />
       <Footer />
     </main>
   );
