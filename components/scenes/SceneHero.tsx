@@ -105,6 +105,7 @@ export function SceneHero() {
           driftFrom={1.08}
           driftDuration={36}
           className="hero-grade"
+          priority
         />
       </motion.div>
 
@@ -140,7 +141,7 @@ export function SceneHero() {
           rotation via `perspective` so it feels like a monumental
           object occupying real space. Metadata rides the deepest
           parallax (±75 px) — it floats closest to the viewer. */}
-      <div className="relative z-[3] flex min-h-[100svh] w-full flex-col justify-between px-[5vw] pb-6 pt-[72px] sm:px-[6vw] sm:pb-8 sm:pt-24 md:px-[8vw] md:pb-14 md:pt-32 lg:pt-36">
+      <div className="relative z-[3] flex min-h-[100svh] w-full flex-col justify-between px-6 pb-6 pt-[72px] sm:px-[6vw] sm:pb-8 sm:pt-24 md:px-[8vw] md:pb-14 md:pt-32 lg:pt-36">
 
         {/* Metadata — top row */}
         <motion.div
@@ -176,7 +177,7 @@ export function SceneHero() {
           >
             <Reveal as="span" delay={500}>
               <span
-                className="block text-[clamp(40px,11vw,220px)]"
+                className="block text-[clamp(40px,10vw,180px)]"
                 style={{ textShadow: '0 4px 60px rgba(0,0,0,0.50)' }}
               >
                 {hero.line1}
@@ -184,7 +185,7 @@ export function SceneHero() {
             </Reveal>
             <Reveal as="span" delay={800}>
               <span
-                className="block text-[clamp(40px,11vw,220px)] pl-[6vw] md:pl-[14vw]"
+                className="block text-[clamp(40px,10vw,180px)] pl-[6vw] md:pl-[14vw]"
                 style={{ textShadow: '0 4px 60px rgba(0,0,0,0.50)' }}
               >
                 for the{' '}

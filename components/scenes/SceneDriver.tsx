@@ -40,7 +40,7 @@ export function SceneDriver() {
           driftDuration={38}
         />
 
-        <div className="relative z-[2] flex w-full items-center px-[5vw] py-16 sm:px-[6vw] sm:py-20 md:px-[8vw] md:py-0">
+        <div className="relative z-[2] flex w-full items-center px-6 py-20 sm:px-[6vw] md:px-[8vw] md:py-40">
           <div className="grid w-full grid-cols-1 items-center gap-8 sm:gap-10 md:grid-cols-2 md:gap-20">
             {/* LEFT — eyebrow + headline with parallax */}
             <motion.div style={{ y, opacity }}>

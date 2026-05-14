@@ -11,6 +11,11 @@ interface CinematicVideoProps {
   /** Drift duration in seconds. Long, slow — never under 20. */
   driftDuration?: number;
   className?: string;
+  /**
+   * Skip lazy loading entirely — attach sources at mount and start loading
+   * immediately. Use for above-the-fold videos (scene-01 hero).
+   */
+  priority?: boolean;
 }
 
 export function CinematicVideo({
@@ -19,10 +24,11 @@ export function CinematicVideo({
   driftFrom = 1.05,
   driftDuration = 24,
   className = '',
+  priority = false,
 }: CinematicVideoProps) {
   const videoRef  = useRef<HTMLVideoElement>(null);
-  const loadedRef = useRef(false);           // sources injected only once
-  const [playing, setPlaying] = useState(false); // drives the fade-in
+  const loadedRef = useRef(false);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -33,11 +39,9 @@ export function CinematicVideo({
       if (p !== undefined) p.catch(() => {});
     };
 
-    // canplay fires once sources are loaded — triggers first play.
     const onCanPlay = () => tryPlay();
     video.addEventListener('canplay', onCanPlay, { once: true });
 
-    // Ken Burns drift — yoyo so there's never a visible reset.
     const tween = gsap.fromTo(
       video,
       { scale: driftFrom },
@@ -50,51 +54,79 @@ export function CinematicVideo({
       },
     );
 
-    // One observer handles both lazy loading (200 px early) and play/pause.
-    const io = new IntersectionObserver(
+    const injectSources = () => {
+      const webmEl = document.createElement('source');
+      webmEl.src  = src.replace('.mp4', '.webm');
+      webmEl.type = 'video/webm';
+      video.appendChild(webmEl);
+
+      const mp4El = document.createElement('source');
+      mp4El.src  = src;
+      mp4El.type = 'video/mp4';
+      video.appendChild(mp4El);
+
+      video.load();
+    };
+
+    if (priority) {
+      // Above-the-fold: inject sources immediately, no lazy load guard.
+      injectSources();
+
+      // Only manage play/pause by visibility once sources are loaded.
+      const visObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) tryPlay();
+          else video.pause();
+        },
+        { threshold: 0, rootMargin: '0px' },
+      );
+      visObserver.observe(video);
+
+      return () => {
+        tween.kill();
+        visObserver.disconnect();
+        video.removeEventListener('canplay', onCanPlay);
+      };
+    }
+
+    // ── Lazy path: two separate observers ─────────────────────────────────
+
+    // Observer 1 — starts loading well before the section enters the viewport,
+    // so the video is ready to play by the time the user scrolls to it.
+    const loadObserver = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          if (!loadedRef.current) {
-            // First entry: inject sources and trigger load.
-            loadedRef.current = true;
-
-            const webmEl = document.createElement('source');
-            webmEl.src  = src.replace('.mp4', '.webm');
-            webmEl.type = 'video/webm';
-            video.appendChild(webmEl);
-
-            const mp4El = document.createElement('source');
-            mp4El.src  = src;
-            mp4El.type = 'video/mp4';
-            video.appendChild(mp4El);
-
-            video.load(); // canplay → tryPlay
-          } else {
-            // Subsequent entries: resume.
-            tryPlay();
-          }
-        } else {
-          video.pause();
-        }
+        if (!entry.isIntersecting || loadedRef.current) return;
+        loadedRef.current = true;
+        injectSources();
       },
-      // rootMargin starts loading 200 px before the element enters the viewport.
-      { rootMargin: '200px 0px', threshold: 0 },
+      { rootMargin: '1500px 0px 1500px 0px', threshold: 0 },
     );
-    io.observe(video);
+
+    // Observer 2 — controls actual play/pause at the moment of visual entry.
+    const playObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) tryPlay();
+        else video.pause();
+      },
+      { threshold: 0.25, rootMargin: '0px' },
+    );
+
+    loadObserver.observe(video);
+    playObserver.observe(video);
 
     return () => {
       tween.kill();
-      io.disconnect();
+      loadObserver.disconnect();
+      playObserver.disconnect();
       video.removeEventListener('canplay', onCanPlay);
     };
-  }, [src, driftFrom, driftDuration]);
+  }, [src, driftFrom, driftDuration, priority]);
 
-  // Cinematic easing matches the design-system token.
   const fadeTransition = 'opacity 600ms cubic-bezier(0.16, 0.84, 0.30, 1)';
 
   return (
     <>
-      {/* Poster / solid background — visible until the first frame plays. */}
+      {/* Poster — solid background visible until the first frame plays. */}
       <div
         aria-hidden
         style={{
@@ -109,7 +141,7 @@ export function CinematicVideo({
         }}
       />
 
-      {/* Video — fades in on the `playing` event. Sources injected lazily. */}
+      {/* Sources injected lazily or at mount (priority). */}
       <video
         ref={videoRef}
         className={`scene-video ${className}`}
@@ -117,11 +149,11 @@ export function CinematicVideo({
         muted
         loop
         playsInline
-        preload="none"
+        preload={priority ? 'auto' : 'none'}
         style={{ opacity: playing ? 1 : 0, transition: fadeTransition }}
         onPlaying={() => setPlaying(true)}
       >
-        {/* <source> elements are appended at runtime by the IntersectionObserver. */}
+        {/* <source> elements appended at runtime by the IntersectionObserver. */}
       </video>
     </>
   );

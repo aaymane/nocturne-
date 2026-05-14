@@ -105,6 +105,14 @@
     }
   }
 
+  /* iPhone notch / Dynamic Island safe areas (portrait: insets are 0, no impact) */
+  @supports (padding: max(0px)) {
+    body {
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+  }
+
   /* Reduce-motion respect */
   @media (prefers-reduced-motion: reduce) {
     *,

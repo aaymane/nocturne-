@@ -42,13 +42,36 @@ const REQUIRED: RequiredField[] = ['name', 'email', 'country', 'size'];
 
 /* ─── Style helpers ─────────────────────────────────────────────────── */
 
-// Base without border-color so errors can swap it in
+// 16px font-size on mobile is REQUIRED — Safari iOS zooms on focus if < 16px.
+// md: reverts to the design's 13px.
 const inputBase =
-  'w-full bg-transparent border-b py-4 text-[13px] text-ink ' +
+  'w-full bg-transparent border-b py-4 text-[16px] md:text-[13px] text-ink ' +
   'placeholder:text-ink-faint focus:outline-none ' +
   'transition-colors duration-700 ease-cinematic';
 
 const labelCls = 'editorial-label text-ink-faint mb-2 block';
+
+/* SVG chevron replaces the unicode ▾ for a crisper, iOS-safe dropdown indicator */
+function SelectChevron() {
+  return (
+    <svg
+      aria-hidden
+      className="pointer-events-none absolute bottom-[18px] right-0 text-ink-faint"
+      width="12"
+      height="8"
+      viewBox="0 0 12 8"
+      fill="none"
+    >
+      <path
+        d="M1 1L6 6L11 1"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 /* ─── Page ──────────────────────────────────────────────────────────── */
 
@@ -59,7 +82,6 @@ export default function ReservePage() {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Set<RequiredField>>(new Set());
 
-  // On change: update value + clear per-field error
   const set =
     (k: keyof FormState) =>
     (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -73,7 +95,6 @@ export default function ReservePage() {
       }
     };
 
-  // Border-bottom: error red (subtle) or default ghost
   const fieldCls = (k: RequiredField, extra = '') =>
     `${inputBase} ${errors.has(k) ? 'border-red-500/40' : 'border-ink-ghost'} ${extra}`.trim();
 
@@ -109,7 +130,7 @@ export default function ReservePage() {
           />
           <div aria-hidden className="absolute inset-0 bg-black/70" />
 
-          <div className="relative z-[2] flex flex-col items-center px-[5vw] py-20 text-center">
+          <div className="relative z-[2] flex flex-col items-center px-6 py-20 text-center sm:px-[5vw]">
             <Reveal>
               <div className="editorial-label mb-8 flex items-center gap-3 text-ink-faint">
                 <span className="block h-px w-9 bg-chrome" />
@@ -118,7 +139,7 @@ export default function ReservePage() {
             </Reveal>
 
             <Reveal delay={200}>
-              <h1 className="font-display font-light leading-[0.88] tracking-[-0.02em] text-[clamp(40px,8vw,120px)]">
+              <h1 className="font-display font-light leading-[0.88] tracking-[-0.02em] text-[clamp(32px,8vw,120px)]">
                 The{' '}
                 <em className="font-light italic text-chrome">Nightcrest</em>
                 {' '}Cap
@@ -146,7 +167,7 @@ export default function ReservePage() {
         </section>
 
         {/* ── SECTION 2: Recap + Form ──────────────────────────────── */}
-        <section className="relative z-[2] px-[5vw] py-20 sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-32">
+        <section className="relative z-[2] px-6 py-20 sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-32">
           <div className="grid grid-cols-1 gap-16 md:grid-cols-2 md:gap-[6vw]">
 
             {/* LEFT — sticky order recap */}
@@ -264,9 +285,7 @@ export default function ReservePage() {
                             </option>
                           ))}
                         </select>
-                        <span className="pointer-events-none absolute bottom-[18px] right-0 text-[10px] text-ink-faint">
-                          ▾
-                        </span>
+                        <SelectChevron />
                       </div>
                     </div>
 
@@ -286,13 +305,11 @@ export default function ReservePage() {
                             </option>
                           ))}
                         </select>
-                        <span className="pointer-events-none absolute bottom-[18px] right-0 text-[10px] text-ink-faint">
-                          ▾
-                        </span>
+                        <SelectChevron />
                       </div>
                     </div>
 
-                    {/* Notes — optional, no validation */}
+                    {/* Notes — optional */}
                     <div>
                       <label className={labelCls}>
                         Notes{' '}
@@ -309,16 +326,16 @@ export default function ReservePage() {
 
                     {/* Submit area */}
                     <div className="flex flex-col gap-4 pt-2">
-                      {/* Global validation message */}
                       {hasErrors && (
                         <p className="text-center text-[11px] uppercase tracking-editorial text-red-400/60">
                           Please complete all required fields
                         </p>
                       )}
 
+                      {/* min-h-[56px] meets Apple HIG 44pt minimum tap target */}
                       <button
                         type="submit"
-                        className="group flex w-full items-center justify-between border border-ink-ghost px-8 py-5 text-[12px] uppercase tracking-editorial text-ink transition-colors duration-1200 ease-cinematic hover:bg-ink hover:text-night"
+                        className="group flex w-full min-h-[56px] items-center justify-between border border-ink-ghost px-8 py-5 text-[12px] uppercase tracking-editorial text-ink transition-colors duration-1200 ease-cinematic hover:bg-ink hover:text-night"
                       >
                         <span>Confirm reservation</span>
                         <span className="transition-transform duration-700 ease-cinematic group-hover:translate-x-1">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * Nightcrest cursor — two-layer crescent design.
@@ -37,6 +37,15 @@ const SIZE_MEDIA       = 72;
 type HoverState = 'default' | 'interactive' | 'media';
 
 export function LuxuryCursor() {
+  // Stable check — fine-pointer devices only. useState initializer runs once
+  // on the client; all refs/effects below are still declared unconditionally
+  // (Rules of Hooks), but the effect exits early and JSX is null on touch.
+  const [active] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(hover: hover) and (pointer: fine)').matches
+      : false,
+  );
+
   const dotWrapRef      = useRef<HTMLDivElement>(null);
   const crescentWrapRef = useRef<HTMLDivElement>(null);
   const dotRef          = useRef<HTMLDivElement>(null);
@@ -46,6 +55,8 @@ export function LuxuryCursor() {
   const arrowRef        = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!active) return;
+
     const dotWrap     = dotWrapRef.current;
     const cresWrap    = crescentWrapRef.current;
     const dot         = dotRef.current;
@@ -199,7 +210,9 @@ export function LuxuryCursor() {
       window.removeEventListener('pointerup',   onUp);
       document.documentElement.removeEventListener('pointerleave', onLeave);
     };
-  }, []);
+  }, [active]);
+
+  if (!active) return null;
 
   // CSS transitions: ONLY for visual state changes (opacity, size, colour).
   // NEVER include `transform` here — that would double-lag the position.

@@ -61,7 +61,7 @@ export function SceneProduct() {
           }}
         />
 
-        <div className="absolute bottom-0 left-0 right-0 z-[2] px-[5vw] pb-14 sm:px-[6vw] sm:pb-20 md:px-[8vw] md:pb-28">
+        <div className="absolute bottom-0 left-0 right-0 z-[2] px-6 pb-14 sm:px-[6vw] sm:pb-20 md:px-[8vw] md:pb-28">
           <Reveal>
             <div className="editorial-label mb-5 flex items-center gap-3 text-chrome">
               <span className="block h-px w-9 bg-chrome" />
@@ -69,7 +69,7 @@ export function SceneProduct() {
             </div>
           </Reveal>
           <Reveal delay={200}>
-            <h2 className="font-display font-light leading-[0.88] tracking-[-0.02em] text-[clamp(48px,12vw,180px)]">
+            <h2 className="font-display font-light leading-[0.88] tracking-[-0.02em] text-[clamp(36px,12vw,180px)]">
               {productName}
             </h2>
           </Reveal>
@@ -80,7 +80,7 @@ export function SceneProduct() {
       </div>
 
       {/* ── ACT 2: Specs + studio shot ───────────────────────────── */}
-      <div className="relative z-[2] grid grid-cols-1 gap-16 px-[5vw] py-20 sm:px-[6vw] sm:py-24 md:grid-cols-2 md:gap-[6vw] md:px-[8vw] md:py-32">
+      <div className="relative z-[2] grid grid-cols-1 gap-16 px-6 py-20 sm:px-[6vw] sm:py-24 md:grid-cols-2 md:gap-[6vw] md:px-[8vw] md:py-32">
 
         {/* LEFT — sticky studio image */}
         <div className="md:sticky md:top-[15vh] md:self-start">
@@ -170,7 +170,7 @@ export function SceneProduct() {
       <div className="relative z-[2] grid grid-cols-1 md:grid-cols-2">
 
         {/* LEFT — editorial copy */}
-        <div className="flex flex-col justify-center px-[5vw] py-20 sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-32">
+        <div className="flex flex-col justify-center px-6 py-20 sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-32">
           <Reveal>
             <div className="editorial-label mb-8 flex items-center gap-3 text-chrome">
               <span className="block h-px w-9 bg-chrome" />
@@ -210,7 +210,7 @@ export function SceneProduct() {
       </div>
 
       {/* ── ACT 4: Packaging + CTA ───────────────────────────────── */}
-      <div className="relative z-[2] px-[5vw] py-20 text-center sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-32">
+      <div className="relative z-[2] px-6 py-20 text-center sm:px-[6vw] sm:py-24 md:px-[8vw] md:py-32">
 
         <Reveal>
           <div className="editorial-label mb-10 inline-flex items-center gap-3 text-chrome">

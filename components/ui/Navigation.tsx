@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useLenis } from '@/lib/lenis-provider';
@@ -29,7 +31,8 @@ function useLiveClock() {
 }
 
 export function Navigation() {
-  const lenis = useLenis();
+  const lenis    = useLenis();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const time = useLiveClock();
@@ -43,7 +46,6 @@ export function Navigation() {
     return () => { lenis.off('scroll', onScroll); };
   }, [lenis]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
@@ -52,12 +54,18 @@ export function Navigation() {
   const onAnchor = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMenuOpen(false);
-    // Small delay so the menu exit animation plays before scroll starts
     setTimeout(() => {
       const el = document.querySelector(href);
       if (el && lenis) lenis.scrollTo(el as HTMLElement, { duration: 2.2 });
       else if (el) (el as HTMLElement).scrollIntoView({ behavior: 'smooth' });
     }, 350);
+  };
+
+  const onLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const navBg = scrolled || menuOpen
@@ -72,11 +80,16 @@ export function Navigation() {
         transition={{ duration: 1.2, delay: 1.6, ease: [0.16, 0.84, 0.3, 1] }}
         className={`fixed inset-x-0 top-0 z-[60] flex items-center justify-between px-5 py-4 transition-all duration-700 ease-cinematic sm:py-5 md:px-10 md:py-6 ${navBg}`}
       >
-        {/* Brand */}
-        <div className="font-display text-xl italic font-light leading-none">
+        {/* Brand — Link to home; smooth-scrolls to top when already on / */}
+        <Link
+          href="/"
+          data-hover
+          onClick={onLogoClick}
+          className="font-display text-xl italic font-light leading-none"
+        >
           {editorial.brand}
           <span className="text-chrome">.</span>
-        </div>
+        </Link>
 
         {/* Desktop links */}
         <ul className="hidden gap-9 md:flex">
@@ -95,9 +108,9 @@ export function Navigation() {
           ))}
         </ul>
 
-        {/* Right side: clock (desktop) + hamburger (mobile) */}
+        {/* Right side: clock (md+) + hamburger (< md) */}
         <div className="flex items-center gap-4">
-          <div className="editorial-label hidden items-center gap-2 sm:flex">
+          <div className="editorial-label hidden items-center gap-2 md:flex">
             <span>Paris</span>
             <span className="text-ink-faint">·</span>
             <AnimatePresence mode="popLayout">
@@ -150,7 +163,6 @@ export function Navigation() {
             transition={{ duration: 0.4, ease: [0.16, 0.84, 0.3, 1] }}
             className="fixed inset-0 z-[55] flex flex-col bg-night/96 px-5 pb-10 pt-20 backdrop-blur-2xl md:hidden"
           >
-            {/* Links */}
             <nav className="flex flex-col mt-4">
               {links.map((l, i) => (
                 <motion.div
@@ -176,7 +188,6 @@ export function Navigation() {
               ))}
             </nav>
 
-            {/* Footer meta */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
