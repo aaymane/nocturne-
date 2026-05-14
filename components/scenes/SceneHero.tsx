@@ -101,7 +101,7 @@ export function SceneHero() {
       >
         <CinematicVideo
           src="/videos/scene-01.mp4"
-          poster="/images/hero-poster.png"
+          poster="/images/hero-poster.webp"
           driftFrom={1.08}
           driftDuration={36}
           className="hero-grade"

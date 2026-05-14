@@ -55,11 +55,19 @@ export function CinematicVideo({
     );
 
     const injectSources = () => {
-      const webmEl = document.createElement('source');
-      webmEl.src  = src.replace('.mp4', '.webm');
-      webmEl.type = 'video/webm';
-      video.appendChild(webmEl);
+      // AV1 WebM — Chrome 70+, Firefox 67+, Edge 94+. Smallest file (~2.8 MB total).
+      const av1El = document.createElement('source');
+      av1El.src  = src.replace('.mp4', '.av1.webm');
+      av1El.type = 'video/webm; codecs=av01.0.04M.08';
+      video.appendChild(av1El);
 
+      // VP9 WebM — Safari 16+ / iOS 16+ (any iPhone on iOS 16+). ~5 MB total.
+      const vp9El = document.createElement('source');
+      vp9El.src  = src.replace('.mp4', '.webm');
+      vp9El.type = 'video/webm; codecs=vp9';
+      video.appendChild(vp9El);
+
+      // H.264 MP4 — ultimate fallback (Safari < 16, old Android). ~8 MB total.
       const mp4El = document.createElement('source');
       mp4El.src  = src;
       mp4El.type = 'video/mp4';
