@@ -18,6 +18,11 @@ const fraunces = Fraunces({
   style: ['normal', 'italic'],
   variable: '--font-display',
   display: 'swap',
+  // Explicit preload — this is the LCP font (logo + headlines).
+  preload: true,
+  // Fallback lets the browser size/place the element immediately before the
+  // real font arrives, so the LCP element is visible from first paint.
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
 });
 
 const interTight = Inter_Tight({
@@ -25,6 +30,7 @@ const interTight = Inter_Tight({
   weight: ['300', '400', '500'],
   variable: '--font-sans',
   display: 'swap',
+  fallback: ['system-ui', '-apple-system', 'Arial', 'sans-serif'],
 });
 
 export const metadata: Metadata = {
