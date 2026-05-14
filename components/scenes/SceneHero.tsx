@@ -149,17 +149,25 @@ export function SceneHero() {
           style={{ x: metaX, y: metaY }}
         >
           <Reveal delay={200}>
-            <div className="editorial-label max-w-[200px] leading-[1.8] sm:max-w-[240px]">
-              {volume}
-              <br />
-              {subtitle}
+            <div className="editorial-label max-w-[200px] overflow-hidden leading-[1.8] sm:max-w-[240px]">
+              {/* Abbreviated on mobile to prevent tracking-editorial overflow */}
+              <span className="md:hidden">Vol · 01</span>
+              <span className="hidden md:block">
+                {volume}
+                <br />
+                {subtitle}
+              </span>
             </div>
           </Reveal>
           <Reveal delay={300}>
-            <div className="editorial-label text-right leading-[1.8]">
-              {coordinates}
-              <br />
-              {city}
+            <div className="editorial-label max-w-[45vw] overflow-hidden text-right leading-[1.8] md:max-w-none">
+              {/* Short form on mobile — long coordinates overflow at 390px */}
+              <span className="md:hidden">Paris · 8e</span>
+              <span className="hidden md:block">
+                {coordinates}
+                <br />
+                {city}
+              </span>
             </div>
           </Reveal>
         </motion.div>
@@ -232,7 +240,8 @@ export function SceneHero() {
 
           <Reveal delay={1100}>
             <div className="text-right">
-              <div className="editorial-label">Tonight</div>
+              {/* Hide "Tonight" label on mobile — the time alone is enough at small sizes */}
+              <div className="editorial-label hidden md:block">Tonight</div>
               <div
                 className="mt-1 font-display text-base italic font-light text-ink sm:text-lg md:mt-2 md:text-2xl"
                 style={{ letterSpacing: '0.02em' }}

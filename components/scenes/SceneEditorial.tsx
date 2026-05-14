@@ -42,6 +42,7 @@ export function SceneEditorial() {
       <Section id="scene-4" className="min-h-[110svh]">
         <CinematicVideo
           src="/videos/scene-04.mp4"
+          poster="/images/scene-04-poster.jpg"
           driftFrom={1.05}
           driftDuration={30}
         />

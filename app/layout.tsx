@@ -28,13 +28,52 @@ const interTight = Inter_Tight({
 });
 
 export const metadata: Metadata = {
-  title: 'Nocturne — Engineered for the Night',
+  metadataBase: new URL('https://nocturne-six-eosin.vercel.app'),
+
+  title: {
+    default: 'Nocturne — The Nightcrest Cap',
+    template: '%s · Nocturne',
+  },
   description:
-    'A cinematic editorial — curated objects at the intersection of luxury fashion and automotive cinematography. Filmed in Paris, after dark.',
+    'A cinematic editorial. Curated objects at the intersection of luxury fashion and automotive cinematography. Filmed in Paris, after dark.',
+
+  keywords: ['Nocturne', 'Nightcrest', 'cap', 'luxury', 'Paris', 'editorial', 'cinematic', 'fashion'],
+  authors: [{ name: 'Nocturne Atelier' }],
+  creator: 'Nocturne Atelier',
+  publisher: 'Nocturne Atelier',
+
   openGraph: {
-    title: 'Nocturne — Engineered for the Night',
-    description: 'A cinematic editorial in motion.',
     type: 'website',
+    locale: 'en_US',
+    url: 'https://nocturne-six-eosin.vercel.app',
+    siteName: 'Nocturne',
+    title: 'Nocturne — The Nightcrest Cap',
+    description: 'A cinematic editorial. Filmed in Paris, after dark. Edition 01 — 200 numbered pieces.',
+    // opengraph-image.png in app/ is auto-detected by Next.js metadata API
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nocturne — The Nightcrest Cap',
+    description: 'A cinematic editorial. Filmed in Paris, after dark. Edition 01 — 200 numbered pieces.',
+    // twitter-image.png in app/ is auto-detected
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
   },
 };
 

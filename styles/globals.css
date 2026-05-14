@@ -94,6 +94,7 @@
   }
 
   /* Mobile: reduce blur radius and translateY for cheaper GPU composite */
+  /* Also tighten editorial letter-spacing — 0.32em on 11px causes text overflow on small screens */
   @media (max-width: 767px) {
     .reveal-init {
       transform: translateY(22px);
@@ -102,6 +103,12 @@
         opacity 1.8s cubic-bezier(0.16, 0.84, 0.22, 1),
         transform 2.0s cubic-bezier(0.16, 0.84, 0.22, 1),
         filter 1.6s cubic-bezier(0.16, 0.84, 0.22, 1);
+    }
+    .editorial-label {
+      letter-spacing: 0.08em;
+    }
+    .editorial-micro {
+      letter-spacing: 0.05em;
     }
   }
 

@@ -59,6 +59,7 @@ export function SceneDetail() {
                  style={{ aspectRatio: '4 / 5', maxWidth: 'min(100%, 28rem)' }}>
               <CinematicVideo
                 src="/videos/scene-03.mp4"
+                poster="/images/scene-03-poster.jpg"
                 driftFrom={1.08}
                 driftDuration={22}
               />

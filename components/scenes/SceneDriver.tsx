@@ -36,6 +36,7 @@ export function SceneDriver() {
       <Section id="scene-2">
         <CinematicVideo
           src="/videos/scene-02.mp4"
+          poster="/images/scene-02-poster.jpg"
           driftFrom={1.05}
           driftDuration={38}
         />
