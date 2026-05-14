@@ -96,7 +96,7 @@ export function SceneHero() {
           Ken Burns drift runs on the video itself via GSAP (separate
           from the mouse parallax — two independent motion layers). */}
       <motion.div
-        className="absolute inset-[-4%]"
+        className="absolute inset-[-4%] overflow-hidden"
         style={{ x: bgX, y: bgY }}
       >
         <CinematicVideo
